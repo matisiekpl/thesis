@@ -6,6 +6,7 @@ from torch.utils.data import DataLoader
 from model import Yolo
 from dataset import TuberculosisDataset
 from loss import YoloLoss
+from utils import convert_cellboxes
 
 seed = 123
 torch.manual_seed(seed)
@@ -47,4 +48,13 @@ for epoch in range(EPOCHS):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        # if idx == 2:
+        #     break
     print(f"Mean loss: {sum(mean_loss) / len(mean_loss)}")
+
+    model.eval()
+    item, r = next(iter(train_loader))
+    item = item.to(DEVICE)
+    y = convert_cellboxes(model(item))
+    # print(y.shape)
+    # print(y[..., 0])
