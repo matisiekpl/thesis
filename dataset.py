@@ -14,7 +14,7 @@ class TuberculosisDataset(torch.utils.data.Dataset):
         self.transform = transform
 
     def __len__(self):
-        return len(os.listdir(self.directory)) / 2
+        return int(len(os.listdir(self.directory)) / 2)
 
     def __getitem__(self, index, single=False):
         image_filename = os.path.join(self.directory, f'tuberculosis-phone-{(index + 1):04d}.jpg')
@@ -32,6 +32,7 @@ class TuberculosisDataset(torch.utils.data.Dataset):
             ])
         boxes = torch.tensor(boxes)
         image = Image.open(image_filename)
+        image_width, image_height = image.size
 
         if single:
             return image, boxes
@@ -43,17 +44,15 @@ class TuberculosisDataset(torch.utils.data.Dataset):
 
         for box in boxes:
             x, y, width, height = box.tolist()
-            i, j = int(self.S * y), int(self.S * x)
+            i, j = int(self.S * y / image_height), int(self.S * x / image_width)
             x_cell, y_cell = self.S * x - j, self.S * y - i
-            width_cell, height_cell = (
-                width * self.S,
-                height * self.S
-            )
 
-            if label_matrix[i, j, 1] == 0:
-                label_matrix[i, j, 1] = 1
+            width_cell, height_cell = width * self.S, height * self.S
+
+            if label_matrix[i, j, 0] == 0:
+                label_matrix[i, j, 0] = 1
                 box_coordinates = torch.tensor([x_cell, y_cell, width_cell, height_cell])
-                label_matrix[1:] = box_coordinates
+                label_matrix[i, j, 1:] = box_coordinates
 
         return image, label_matrix
 
@@ -66,10 +65,3 @@ class TuberculosisDataset(torch.utils.data.Dataset):
                                      facecolor='none')
             ax.add_patch(rect)
         plt.show()
-
-
-d = TuberculosisDataset()
-# print(d.__len__())
-# print(d.__getitem__(0))
-
-d.show(0)
