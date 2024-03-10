@@ -61,8 +61,8 @@ def main():
     train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
 
     # Create data loaders for training and validation sets
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_dataset, batch_size=128, shuffle=False, num_workers=4)
 
 
     # Define the DenseNet model
