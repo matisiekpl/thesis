@@ -160,3 +160,5 @@ cython_debug/
 .idea/
 
 dataset/
+*.pt
+experiments/*/*.pt
