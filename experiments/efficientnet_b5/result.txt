@@ -1,15 +1,15 @@
                                   precision    recall  f1-score   support
 
-                  Artefakt (ART)       0.00      0.00      0.00        45
-                     Blast (BLA)       0.02      0.04      0.03        26
-               Erytroblast (EBO)       0.19      0.14      0.16        63
-                  Limfocyt (LYT)       0.29      0.06      0.09        36
-                   Monocyt (MYB)       0.14      0.23      0.17        13
-Krwinka biała pałeczkowata (NGB)       0.00      0.00      0.00        17
-    Segmentowany neutrofil (NGS)       0.00      0.00      0.00        58
-      Komórka plazmatyczna (PLM)       0.07      0.71      0.13        17
-               Promielocyt (PMO)       0.00      0.00      0.00        27
+                  Artefakt (ART)       0.50      0.33      0.40         3
+                     Blast (BLA)       0.00      0.00      0.00         3
+               Erytroblast (EBO)       0.00      0.00      0.00         4
+                  Limfocyt (LYT)       0.00      0.00      0.00         5
+                   Monocyt (MYB)       0.00      0.00      0.00         3
+Krwinka biała pałeczkowata (NGB)       0.00      0.00      0.00         1
+    Segmentowany neutrofil (NGS)       0.00      0.00      0.00         4
+      Komórka plazmatyczna (PLM)       0.17      0.25      0.20         4
+               Promielocyt (PMO)       0.00      0.00      0.00         3
 
-                        accuracy                           0.09       302
-                       macro avg       0.08      0.13      0.07       302
-                    weighted avg       0.09      0.09      0.06       302
+                        accuracy                           0.07        30
+                       macro avg       0.07      0.06      0.07        30
+                    weighted avg       0.07      0.07      0.07        30

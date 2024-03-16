@@ -257,6 +257,11 @@ def train(experiment_name, model_name):
                 f'{names[i]} ({i})' for i in dataset.classes]))
         result_file.close()
 
+        torch.save({
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+        }, f'{experiment_path}/checkpoint.pt')
+
     log_file.close()
     print("Training complete.")
 
