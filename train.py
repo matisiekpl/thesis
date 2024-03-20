@@ -19,16 +19,31 @@ LR = 0.001
 DATASET_PART = 1
 DRY = False
 INPUT = "/kaggle/input/bone-marrow-cell-classification/bone_marrow_cell_dataset"
+# CLASSES = [
+#     'NGS',
+#     'EBO',
+#     'LYT',
+#     'ART',
+#     'PMO',
+#     'BLA',
+#     'NGB',
+#     'PLM',
+#     'MYB',
+# ]
 CLASSES = [
-    'NGS',
-    'EBO',
-    'LYT',
-    'ART',
-    'PMO',
+    'ABE',
+    'BAS',
     'BLA',
-    'NGB',
-    'PLM',
+    'EBO',
+    'FGC',
+    'LYI',
+    'LYT',
+    'MON',
     'MYB',
+    'NGB',
+    'PEB',
+    'PLM',
+    'PMO'
 ]
 BATCH_SIZE = 16
 
@@ -51,8 +66,8 @@ names = {
     'LYI': 'Niedojrzały limfocyt',
     'LYT': 'Limfocyt',
     'MMZ': 'Metamielocyt',
-    'MON': 'Monocyte',
-    'MYB': 'Monocyt',
+    'MON': 'Monocyt',
+    'MYB': 'Mielocyt',
     'NGB': 'Krwinka biała pałeczkowata',
     'NGS': 'Segmentowany neutrofil',
     'NIF': 'Brak rozpoznania',
