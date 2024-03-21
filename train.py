@@ -19,40 +19,11 @@ LR = 0.001
 DATASET_PART = 1
 DRY = False
 INPUT = "/kaggle/input/bone-marrow-cell-classification/bone_marrow_cell_dataset"
-# Best
-# CLASSES = [
-#     'NGS',
-#     'EBO',
-#     'LYT',
-#     'ART',
-#     'PMO',
-#     'BLA',
-#     'NGB',
-#     'PLM',
-#     'MYB',
-# ]
-# Useful for diagnosis
-# CLASSES = [
-#     'ABE',
-#     'BAS',
-#     'BLA', # included
-#     'EBO', # included
-#     'FGC', # included
-#     'LYI',
-#     'LYT', # included
-#     'MON', # included
-#     'MYB', # included
-#     'NGB', # included
-#     'PEB', # included
-#     'PLM', # included
-#     'PMO'
-# ]
-# Final
+
 CLASSES = [
     'NGS',
     'EBO',
     'LYT',
-    'ART',
     'PMO',
     'BLA',
     'NGB',
@@ -60,9 +31,9 @@ CLASSES = [
     'MYB',
     'EOS',
     'MON',
-    'NIF',
     'PEB'
 ]
+
 BATCH_SIZE = 16
 
 if platform == "darwin":
@@ -152,6 +123,9 @@ transform = transforms.Compose([
 
 
 def train(experiment_name, model_name):
+    for c in CLASSES:
+        print(f'Using {c}: {names[c]}')
+
     experiment_path = f'./experiments/{experiment_name}'
     if not os.path.exists(experiment_path):
         os.makedirs(experiment_path)
@@ -281,6 +255,7 @@ def train(experiment_name, model_name):
         plt.plot(validation_accuracy_history,
                  label='Dokładność dla danych walidacyjnych')
         plt.legend()
+        plt.ylim(0, 1)
         plt.savefig(f'{experiment_path}/acc.png', bbox_inches="tight")
 
         torch.save(model.state_dict(), f'{experiment_path}/model.pth')

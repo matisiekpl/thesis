@@ -1,3 +1,4 @@
 Experiment: efficientnet_b5
-Classes: ['ABE', 'BAS', 'BLA', 'EBO', 'FGC', 'LYI', 'LYT', 'MON', 'MYB', 'NGB', 'PEB', 'PLM', 'PMO']
-Number of images: 109099
+Classes: ['BLA', 'EBO', 'EOS', 'LYT', 'MON', 'MYB', 'NGB', 'NGS', 'PEB', 'PLM', 'PMO']
+Number of images: 143845
+Epoch 1/3, Training Loss: 0.0
