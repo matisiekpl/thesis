@@ -19,6 +19,7 @@ LR = 0.001
 DATASET_PART = 1
 DRY = False
 INPUT = "/kaggle/input/bone-marrow-cell-classification/bone_marrow_cell_dataset"
+# Best
 # CLASSES = [
 #     'NGS',
 #     'EBO',
@@ -30,20 +31,37 @@ INPUT = "/kaggle/input/bone-marrow-cell-classification/bone_marrow_cell_dataset"
 #     'PLM',
 #     'MYB',
 # ]
+# Useful for diagnosis
+# CLASSES = [
+#     'ABE',
+#     'BAS',
+#     'BLA', # included
+#     'EBO', # included
+#     'FGC', # included
+#     'LYI',
+#     'LYT', # included
+#     'MON', # included
+#     'MYB', # included
+#     'NGB', # included
+#     'PEB', # included
+#     'PLM', # included
+#     'PMO'
+# ]
+# Final
 CLASSES = [
-    'ABE',
-    'BAS',
-    'BLA',
+    'NGS',
     'EBO',
-    'FGC',
-    'LYI',
     'LYT',
-    'MON',
-    'MYB',
+    'ART',
+    'PMO',
+    'BLA',
     'NGB',
-    'PEB',
     'PLM',
-    'PMO'
+    'MYB',
+    'EOS',
+    'MON',
+    'NIF',
+    'PEB'
 ]
 BATCH_SIZE = 16
 
@@ -125,6 +143,14 @@ class CustomDataset(Dataset):
             return image, label
 
 
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[
+        0.229, 0.224, 0.225]),
+])
+
+
 def train(experiment_name, model_name):
     experiment_path = f'./experiments/{experiment_name}'
     if not os.path.exists(experiment_path):
@@ -137,13 +163,6 @@ def train(experiment_name, model_name):
         log_file.flush()
 
     log(f'Experiment: {experiment_name}')
-
-    transform = transforms.Compose([
-        transforms.Resize((224, 224)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[
-                             0.229, 0.224, 0.225]),
-    ])
 
     dataset = CustomDataset(root_dir=INPUT, transform=transform)
     log(f'Classes: {dataset.classes}')
