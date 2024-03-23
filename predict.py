@@ -23,7 +23,7 @@ model.load_state_dict(torch.load(
     'experiments/efficientnet_b5/model.pth', map_location=torch.device('cpu')))
 
 
-image = Image.open('dataset/MMZ/0001-1000/MMZ_00006.jpg').convert('RGB')
+# image = Image.open('dataset/MMZ/0001-1000/MMZ_00006.jpg').convert('RGB')
 image = Image.open('sample/x6.png').convert('RGB')
 image = transform(image)
 
@@ -32,12 +32,12 @@ scaler = StandardScaler()
 model.eval()
 with torch.no_grad():
     outputs = model(image.unsqueeze(0))
-    outputs = outputs[:, 1:]
+    # outputs = outputs[:, 1:]
     print(outputs.shape)
     _, predicted = torch.max(outputs, 1)
     for i, p in enumerate(outputs[0]):
         # print(f'{names[dataset.classes[i]]}: {p}')
         percent = torch.nn.functional.softmax(outputs, dim=1)[0][i] * 100
-        print(f'{names[dataset.classes[i+1]]}: {percent.item():.4f}%')
+        print(f'{names[dataset.classes[i]]}: {percent.item():.4f}%')
     print(
-        f'Predicted: {names[dataset.classes[predicted+1]]}')
+        f'Predicted: {names[dataset.classes[predicted]]}')
