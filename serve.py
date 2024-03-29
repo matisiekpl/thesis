@@ -4,11 +4,13 @@ import torch
 import torch.nn as nn
 from PIL import Image
 from flask import Flask, request
+from flask_cors import CORS
 from torchvision import models
 
 from train import transform, names
 
 app = Flask(__name__)
+CORS(app)
 
 classes = ['BLA', 'EBO', 'EOS', 'LYT', 'MON', 'MYB', 'NGB', 'NGS', 'PEB', 'PLM', 'PMO']
 model = models.efficientnet_b5(weights='DEFAULT')
@@ -30,7 +32,7 @@ def predict(revision):
     if '.' not in file.filename or file.filename.rsplit('.', 1)[1].lower() not in allowed_extensions:
         return 'Invalid file'
     image_stream = BytesIO(file.read())
-    image = transform(Image.open(image_stream))
+    image = transform(Image.open(image_stream).convert('RGB'))
 
     model.eval()
     with torch.no_grad():
