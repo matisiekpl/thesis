@@ -6,20 +6,20 @@ from PIL import Image
 from flask import Flask, request
 from torchvision import models
 
-from train import CustomDataset, transform, INPUT, names
+from train import transform, names
 
 app = Flask(__name__)
 
-dataset = CustomDataset(root_dir=INPUT, transform=transform)
+classes = ['BLA', 'EBO', 'EOS', 'LYT', 'MON', 'MYB', 'NGB', 'NGS', 'PEB', 'PLM', 'PMO']
 model = models.efficientnet_b5(weights='DEFAULT')
 num_features = model.classifier[1].in_features
-model.classifier = nn.Linear(num_features, len(dataset.classes))
+model.classifier = nn.Linear(num_features, len(classes))
 model.load_state_dict(torch.load(
     'experiments/efficientnet_b5/model.pth', map_location=torch.device('cpu')))
 
 
-@app.route('/predict/<model>', methods=['POST'])
-def predict():
+@app.route('/predict/<revision>', methods=['POST'])
+def predict(revision):
     if 'file' not in request.files:
         return 'No file part'
 
@@ -38,8 +38,8 @@ def predict():
         result = {}
         for i, p in enumerate(outputs[0]):
             percent = torch.nn.functional.softmax(outputs, dim=1)[0][i] * 100
-            print(f'{names[dataset.classes[i]]}: {percent.item():.4f}%')
-            result[names[dataset.classes[i]]] = percent.item()
+            print(f'{names[classes[i]]}: {percent.item():.4f}%')
+            result[names[classes[i]]] = percent.item()
         return result
 
 

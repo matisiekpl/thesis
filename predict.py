@@ -22,6 +22,8 @@ model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
 model.load_state_dict(torch.load(
     'experiments/efficientnet_b5/model.pth', map_location=torch.device('cpu')))
 
+print(dataset.classes)
+
 
 # image = Image.open('dataset/MMZ/0001-1000/MMZ_00006.jpg').convert('RGB')
 image = Image.open('sample/x6.png').convert('RGB')
