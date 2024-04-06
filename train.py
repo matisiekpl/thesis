@@ -157,6 +157,10 @@ def train(experiment_name, model_name):
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE,
                             shuffle=False, num_workers=4)
 
+    if model_name == 'efficientnet_b0':
+        model = models.efficientnet_b0(weights='DEFAULT')
+        num_ftrs = model.classifier[1].in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
     if model_name == 'efficientnet_b5':
         model = models.efficientnet_b5(weights='DEFAULT')
         num_ftrs = model.classifier[1].in_features
@@ -276,4 +280,5 @@ def train(experiment_name, model_name):
 
 
 if __name__ == '__main__':
-    train('efficientnet_b5', 'efficientnet_b5')
+    # train('efficientnet_b5', 'efficientnet_b5')
+    train('efficientnet_b0_ig', 'efficientnet_b0')
