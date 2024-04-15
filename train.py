@@ -281,4 +281,4 @@ def train(experiment_name, model_name):
 
 if __name__ == '__main__':
     # train('efficientnet_b5', 'efficientnet_b5')
-    train('efficientnet_b0_ig', 'efficientnet_b0')
+    train('efficientnet_b0', 'efficientnet_b0')
