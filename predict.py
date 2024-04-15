@@ -16,17 +16,18 @@ from train import CustomDataset, transform, INPUT, names
 from sklearn.preprocessing import StandardScaler
 
 dataset = CustomDataset(root_dir=INPUT, transform=transform)
-model = models.efficientnet_b5(weights='DEFAULT')
+model = models.efficientnet_b0(weights='DEFAULT')
 num_ftrs = model.classifier[1].in_features
 model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
 model.load_state_dict(torch.load(
-    'experiments/efficientnet_b5/model.pth', map_location=torch.device('cpu')))
+    'experiments/efficientnet_b0/model.pth', map_location=torch.device('cpu')))
 
 print(dataset.classes)
 
 
-# image = Image.open('dataset/MMZ/0001-1000/MMZ_00006.jpg').convert('RGB')
-image = Image.open('sample/x6.png').convert('RGB')
+image = Image.open('dataset/MMZ/0001-1000/MMZ_00006.jpg').convert('RGB')
+# image = Image.open('sample/x6.png').convert('RGB')
+# image = Image.open('cells/Im060_1/cell_12.png').convert('RGB')
 image = transform(image)
 
 scaler = StandardScaler()

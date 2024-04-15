@@ -16,7 +16,7 @@ from sys import platform
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 EPOCHS = 3
 LR = 0.001
-DATASET_PART = 1
+DATASET_PART = 0.2
 DRY = False
 INPUT = "/kaggle/input/bone-marrow-cell-classification/bone_marrow_cell_dataset"
 
@@ -116,6 +116,8 @@ class CustomDataset(Dataset):
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
+    # transforms.ToPILImage(),
+    transforms.RandomEqualize(1),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[
         0.229, 0.224, 0.225]),
