@@ -16,7 +16,7 @@ from sys import platform
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 EPOCHS = 3
 LR = 0.001
-DATASET_PART = 0.2
+DATASET_PART = 0.1
 DRY = False
 INPUT = "/kaggle/input/bone-marrow-cell-classification/bone_marrow_cell_dataset"
 
@@ -124,7 +124,7 @@ transform = transforms.Compose([
 ])
 
 
-def train(experiment_name, model_name):
+def train(experiment_name, model_name, epochs=EPOCHS):
     for c in CLASSES:
         print(f'Using {c}: {names[c]}')
 
@@ -167,6 +167,46 @@ def train(experiment_name, model_name):
         model = models.efficientnet_b5(weights='DEFAULT')
         num_ftrs = model.classifier[1].in_features
         model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'resnet18':
+        model = models.resnet18(pretrained=True)
+        num_ftrs = model.fc.in_features
+        model.fc = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'resnet50':
+        model = models.resnet50(pretrained=True)
+        num_ftrs = model.fc.in_features
+        model.fc = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'resnet101':
+        model = models.resnet101(pretrained=True)
+        num_ftrs = model.fc.in_features
+        model.fc = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'inception_v3':
+        model = models.inception_v3(pretrained=True)
+        num_ftrs = model.fc.in_features
+        model.fc = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'densenet121':
+        model = models.densenet121(pretrained=True)
+        num_ftrs = model.classifier.in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'densenet169':
+        model = models.densenet169(pretrained=True)
+        num_ftrs = model.classifier.in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'densenet201':
+        model = models.densenet201(pretrained=True)
+        num_ftrs = model.classifier.in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'vgg16':
+        model = models.vgg16(pretrained=True)
+        num_ftrs = model.classifier[6].in_features
+        model.classifier[6] = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'vgg19':
+        model = models.vgg19(pretrained=True)
+        num_ftrs = model.classifier[6].in_features
+        model.classifier[6] = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'alexnet':
+        model = models.alexnet(pretrained=True)
+        num_ftrs = model.classifier[6].in_features
+        model.classifier[6] = nn.Linear(num_ftrs, len(dataset.classes))
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LR)
@@ -180,7 +220,7 @@ def train(experiment_name, model_name):
     training_accuracy_history = []
     validation_accuracy_history = []
 
-    for epoch in range(EPOCHS):
+    for epoch in range(epochs):
         model.train()
         running_loss = 0.0
         running_correct = 0
@@ -283,4 +323,6 @@ def train(experiment_name, model_name):
 
 if __name__ == '__main__':
     # train('efficientnet_b5', 'efficientnet_b5')
-    train('efficientnet_b0', 'efficientnet_b0')
+    # train('efficientnet_b0', 'efficientnet_b0')
+    train('resnet18', 'resnet18')
+    # train('vgg19', 'vgg19')
