@@ -12,12 +12,13 @@ from sklearn.metrics import f1_score, classification_report, confusion_matrix
 from tqdm import tqdm
 from PIL import Image
 from sys import platform
+import math
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 EPOCHS = 3
 LR = 0.001
-DATASET_PART = 0.1
-DRY = False
+DATASET_PART = 0.05
+DRY = True
 INPUT = "/kaggle/input/bone-marrow-cell-classification/bone_marrow_cell_dataset"
 
 CLASSES = [
@@ -33,6 +34,7 @@ CLASSES = [
     'MON',
     'PEB'
 ]
+CLASSES = []
 
 BATCH_SIZE = 16
 
@@ -214,6 +216,9 @@ def train(experiment_name, model_name, epochs=EPOCHS):
     device = torch.device(DEVICE)
     model.to(device)
 
+    x1 = []
+    x2 = []
+
     training_loss_history = []
     validation_loss_history = []
 
@@ -244,6 +249,7 @@ def train(experiment_name, model_name, epochs=EPOCHS):
             training_loss_history.append(running_loss)
             running_accuracy = running_correct / len(train_dataset)
             training_accuracy_history.append(running_accuracy)
+            x1.append(epoch+1)
 
         log(f'Epoch {epoch+1}/{EPOCHS}, Training Loss: {running_loss/len(train_loader)}')
 
@@ -267,6 +273,7 @@ def train(experiment_name, model_name, epochs=EPOCHS):
                 y_pred_val.extend(predicted.cpu().numpy())
 
         validation_loss_history.append(val_loss)
+        x2.append(epoch+1)
 
         val_loss /= len(val_loader)
         val_accuracy = val_correct / len(val_dataset)
@@ -277,32 +284,38 @@ def train(experiment_name, model_name, epochs=EPOCHS):
             y_pred_val, target_names=dataset.classes))
         log(f'Epoch {epoch+1}/{EPOCHS}, Validation Loss: {val_loss}, Val Accuracy: {val_accuracy}, F1: {f1_val}')
 
+        plt.clf()
+        plt.title('Wykres funkcji straty od epoki')
+        plt.plot(x1, training_loss_history, label='Strata treningu')
+        plt.plot(x2, validation_loss_history, label='Strata walidacji')
+        plt.legend()
+        plt.xticks(range(math.floor(min(x2)), math.ceil(max(x2))+1))
+        plt.xlabel('Epoka')
+        plt.ylabel('Strata')
+        plt.savefig(f'{experiment_path}/loss.png', bbox_inches="tight")
+
+        plt.clf()
+        plt.title('Wykres dokładności od epoki')
+        plt.plot(x1, training_accuracy_history,
+                 label='Dokładność dla danych treningowych')
+        plt.plot(x2, validation_accuracy_history,
+                 label='Dokładność dla danych walidacyjnych')
+        plt.legend()
+        plt.ylim(0, 1)
+        plt.xticks(range(math.floor(min(x2)), math.ceil(max(x2))+1))
+        plt.xlabel('Epoka')
+        plt.ylabel('Dokładność')
+        plt.savefig(f'{experiment_path}/acc.png', bbox_inches="tight")
+
         cf_matrix = confusion_matrix(y_true_val, y_pred_val)
         df_cm = pd.DataFrame(cf_matrix / np.sum(cf_matrix, axis=1)[:, None], index=[
                              f'{names[i]} ({i})' for i in dataset.classes], columns=[f'{names[i]} ({i})' for i in dataset.classes])
-        plt.cla()
+        plt.clf()
         plt.figure(figsize=(12, 7))
         sn.heatmap(df_cm, annot=True)
         plt.title('Macierz pomyłek')
         plt.savefig(f'{experiment_path}/confusion_matrix.png',
                     bbox_inches="tight")
-
-        plt.cla()
-        plt.title('Wykres funkcji straty od epoki')
-        plt.plot(training_loss_history, label='Strata treningu')
-        plt.plot(validation_loss_history, label='Strata walidacji')
-        plt.legend()
-        plt.savefig(f'{experiment_path}/loss.png', bbox_inches="tight")
-
-        plt.cla()
-        plt.title('Wykres dokładności od epoki')
-        plt.plot(training_accuracy_history,
-                 label='Dokładność dla danych treningowych')
-        plt.plot(validation_accuracy_history,
-                 label='Dokładność dla danych walidacyjnych')
-        plt.legend()
-        plt.ylim(0, 1)
-        plt.savefig(f'{experiment_path}/acc.png', bbox_inches="tight")
 
         torch.save(model.state_dict(), f'{experiment_path}/model.pth')
 
@@ -323,6 +336,6 @@ def train(experiment_name, model_name, epochs=EPOCHS):
 
 if __name__ == '__main__':
     # train('efficientnet_b5', 'efficientnet_b5')
-    # train('efficientnet_b0', 'efficientnet_b0')
-    train('resnet18', 'resnet18')
+    train('efficientnet_b0', 'efficientnet_b0')
+    # train('resnet18', 'resnet18')
     # train('vgg19', 'vgg19')
