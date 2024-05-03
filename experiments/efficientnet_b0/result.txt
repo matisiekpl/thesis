@@ -1,27 +1,27 @@
                                   precision    recall  f1-score   support
 
    Nieprawidłowy eozynofil (ABE)       0.00      0.00      0.00         0
-                  Artefakt (ART)       0.16      0.06      0.08       209
-                   Bazofil (BAS)       0.00      0.00      0.00         6
-                     Blast (BLA)       0.11      0.33      0.16       136
-               Erytroblast (EBO)       0.50      0.00      0.01       246
-                 Eozynofil (EOS)       0.00      0.00      0.00        72
-                   Fagocyt (FGC)       0.00      0.00      0.00         0
-          Włochata komórka (HAC)       0.00      0.00      0.00         5
+                  Artefakt (ART)       0.09      0.16      0.11       182
+                   Bazofil (BAS)       0.00      0.00      0.00         3
+                     Blast (BLA)       0.05      0.15      0.08       130
+               Erytroblast (EBO)       0.20      0.00      0.01       259
+                 Eozynofil (EOS)       0.00      0.00      0.00        53
+                   Fagocyt (FGC)       0.00      0.00      0.00         2
+          Włochata komórka (HAC)       0.00      0.00      0.00         3
           Cienie komórkowe (KSC)       0.00      0.00      0.00         0
-      Niedojrzały limfocyt (LYI)       0.00      0.00      0.00         0
-                  Limfocyt (LYT)       0.24      0.07      0.11       247
-              Metamielocyt (MMZ)       0.01      0.03      0.02        30
-                   Monocyt (MON)       0.03      0.23      0.05        40
-                  Mielocyt (MYB)       0.00      0.00      0.00        69
-Krwinka biała pałeczkowata (NGB)       0.04      0.04      0.04       110
-    Segmentowany neutrofil (NGS)       0.00      0.00      0.00       293
-          Brak rozpoznania (NIF)       0.02      0.14      0.04        42
-              Inna komórka (OTH)       0.00      0.00      0.00         1
-            Proerytroblast (PEB)       0.00      0.00      0.00        24
-      Komórka plazmatyczna (PLM)       0.00      0.00      0.00        79
-               Promielocyt (PMO)       0.09      0.02      0.03       101
+      Niedojrzały limfocyt (LYI)       0.00      0.00      0.00         1
+                  Limfocyt (LYT)       0.08      0.04      0.05       257
+              Metamielocyt (MMZ)       0.00      0.00      0.00        28
+                   Monocyt (MON)       0.03      0.12      0.05        42
+                  Mielocyt (MYB)       0.03      0.04      0.03        81
+Krwinka biała pałeczkowata (NGB)       0.05      0.16      0.08        89
+    Segmentowany neutrofil (NGS)       0.00      0.00      0.00       304
+          Brak rozpoznania (NIF)       0.09      0.03      0.04        36
+              Inna komórka (OTH)       0.00      0.00      0.00         3
+            Proerytroblast (PEB)       0.00      0.00      0.00        20
+      Komórka plazmatyczna (PLM)       0.00      0.00      0.00        78
+               Promielocyt (PMO)       0.00      0.00      0.00       139
 
-                        accuracy                           0.06      1710
-                       macro avg       0.06      0.04      0.03      1710
-                    weighted avg       0.14      0.06      0.05      1710
+                        accuracy                           0.05      1710
+                       macro avg       0.03      0.03      0.02      1710
+                    weighted avg       0.06      0.05      0.03      1710

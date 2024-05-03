@@ -222,8 +222,8 @@ def train(experiment_name, model_name, epochs=EPOCHS):
     training_loss_history = []
     validation_loss_history = []
 
-    training_accuracy_history = []
-    validation_accuracy_history = []
+    training_f1_history = []
+    validation_f1_history = []
 
     for epoch in range(epochs):
         model.train()
@@ -231,6 +231,8 @@ def train(experiment_name, model_name, epochs=EPOCHS):
         running_correct = 0
 
         if not DRY:
+            y_true_train = []
+            y_pred_train = []
             for inputs, labels in tqdm(train_loader):
                 inputs, labels = inputs.to(device), labels.to(device)
 
@@ -245,11 +247,15 @@ def train(experiment_name, model_name, epochs=EPOCHS):
                 loss.backward()
                 optimizer.step()
 
+                y_true_train.extend(labels.cpu().numpy())
+                y_pred_train.extend(predicted.cpu().numpy())
+
                 running_loss += loss.item()
             training_loss_history.append(running_loss)
             running_accuracy = running_correct / len(train_dataset)
-            training_accuracy_history.append(running_accuracy)
             x1.append(epoch+1)
+            f1_train = f1_score(y_true_train, y_pred_train, average='weighted')
+            training_f1_history.append(f1_train)
 
         log(f'Epoch {epoch+1}/{EPOCHS}, Training Loss: {running_loss/len(train_loader)}')
 
@@ -277,14 +283,15 @@ def train(experiment_name, model_name, epochs=EPOCHS):
 
         val_loss /= len(val_loader)
         val_accuracy = val_correct / len(val_dataset)
-        validation_accuracy_history.append(val_accuracy)
         f1_val = f1_score(y_true_val, y_pred_val, average='weighted')
+        validation_f1_history.append(f1_val)
 
         log(classification_report(y_true_val,
             y_pred_val, target_names=dataset.classes))
         log(f'Epoch {epoch+1}/{EPOCHS}, Validation Loss: {val_loss}, Val Accuracy: {val_accuracy}, F1: {f1_val}')
 
         plt.clf()
+        plt.figure(figsize=(5, 7))
         plt.title('Wykres funkcji straty od epoki')
         plt.plot(x1, training_loss_history, label='Strata treningu')
         plt.plot(x2, validation_loss_history, label='Strata walidacji')
@@ -295,17 +302,18 @@ def train(experiment_name, model_name, epochs=EPOCHS):
         plt.savefig(f'{experiment_path}/loss.png', bbox_inches="tight")
 
         plt.clf()
-        plt.title('Wykres dokładności od epoki')
-        plt.plot(x1, training_accuracy_history,
-                 label='Dokładność dla danych treningowych')
-        plt.plot(x2, validation_accuracy_history,
-                 label='Dokładność dla danych walidacyjnych')
+        plt.figure(figsize=(5, 7))
+        plt.title('Wykres F1 od epoki')
+        plt.plot(x1, training_f1_history,
+                 label='F1 dla danych treningowych')
+        plt.plot(x2, validation_f1_history,
+                 label='F1 dla danych walidacyjnych')
         plt.legend()
         plt.ylim(0, 1)
         plt.xticks(range(math.floor(min(x2)), math.ceil(max(x2))+1))
         plt.xlabel('Epoka')
-        plt.ylabel('Dokładność')
-        plt.savefig(f'{experiment_path}/acc.png', bbox_inches="tight")
+        plt.ylabel('F1')
+        plt.savefig(f'{experiment_path}/f1.png', bbox_inches="tight")
 
         cf_matrix = confusion_matrix(y_true_val, y_pred_val)
         df_cm = pd.DataFrame(cf_matrix / np.sum(cf_matrix, axis=1)[:, None], index=[
