@@ -315,6 +315,26 @@ def train(experiment_name, model_name, epochs=EPOCHS):
         plt.ylabel('F1')
         plt.savefig(f'{experiment_path}/f1.png', bbox_inches="tight")
 
+        fig, ax = plt.subplots(1, 2, figsize=(12, 7))
+        ax[0].plot(x1, training_loss_history, label='Strata treningu')
+        ax[0].plot(x2, validation_loss_history, label='Strata walidacji')
+        ax[0].legend()
+        ax[0].set_title('Wykres funkcji straty od epoki')
+        ax[0].set_xlabel('Epoka')
+        ax[0].set_ylabel('Strata')
+        ax[0].set_xticks(range(math.floor(min(x2)), math.ceil(max(x2))+1))
+        ax[1].plot(x1, training_f1_history,
+                   label='F1 dla danych treningowych')
+        ax[1].plot(x2, validation_f1_history,
+                   label='F1 dla danych walidacyjnych')
+        ax[1].legend()
+        ax[1].set_title('Wykres F1 od epoki')
+        ax[1].set_xlabel('Epoka')
+        ax[1].set_ylabel('F1')
+        ax[1].set_ylim(0, 1)
+        ax[1].set_xticks(range(math.floor(min(x2)), math.ceil(max(x2))+1))
+        plt.savefig(f'{experiment_path}/combined.png', bbox_inches="tight")
+
         cf_matrix = confusion_matrix(y_true_val, y_pred_val)
         df_cm = pd.DataFrame(cf_matrix / np.sum(cf_matrix, axis=1)[:, None], index=[
                              f'{names[i]} ({i})' for i in dataset.classes], columns=[f'{names[i]} ({i})' for i in dataset.classes])
