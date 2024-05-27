@@ -17,8 +17,8 @@ import math
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 EPOCHS = 3
 LR = 0.001
-DATASET_PART = 0.05
-DRY = True
+DATASET_PART = 1
+DRY = False
 INPUT = "/kaggle/input/bone-marrow-cell-classification/bone_marrow_cell_dataset"
 
 CLASSES = [
@@ -34,7 +34,6 @@ CLASSES = [
     'MON',
     'PEB'
 ]
-CLASSES = []
 
 BATCH_SIZE = 16
 
@@ -163,6 +162,10 @@ def train(experiment_name, model_name, epochs=EPOCHS):
 
     if model_name == 'efficientnet_b0':
         model = models.efficientnet_b0(weights='DEFAULT')
+        num_ftrs = model.classifier[1].in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'efficientnet_b3':
+        model = models.efficientnet_b3(weights='DEFAULT')
         num_ftrs = model.classifier[1].in_features
         model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
     if model_name == 'efficientnet_b5':
@@ -299,7 +302,8 @@ def train(experiment_name, model_name, epochs=EPOCHS):
         plt.xticks(range(math.floor(min(x2)), math.ceil(max(x2))+1))
         plt.xlabel('Epoka')
         plt.ylabel('Strata')
-        plt.savefig(f'{experiment_path}/loss.png', bbox_inches="tight")
+        plt.savefig(f'{experiment_path}/loss.eps',
+                    bbox_inches="tight", format='eps')
 
         plt.clf()
         plt.figure(figsize=(5, 7))
@@ -313,7 +317,8 @@ def train(experiment_name, model_name, epochs=EPOCHS):
         plt.xticks(range(math.floor(min(x2)), math.ceil(max(x2))+1))
         plt.xlabel('Epoka')
         plt.ylabel('F1')
-        plt.savefig(f'{experiment_path}/f1.png', bbox_inches="tight")
+        plt.savefig(f'{experiment_path}/f1.eps',
+                    bbox_inches="tight", format='eps')
 
         fig, ax = plt.subplots(1, 2, figsize=(12, 7))
         ax[0].plot(x1, training_loss_history, label='Strata treningu')
@@ -333,17 +338,18 @@ def train(experiment_name, model_name, epochs=EPOCHS):
         ax[1].set_ylabel('F1')
         ax[1].set_ylim(0, 1)
         ax[1].set_xticks(range(math.floor(min(x2)), math.ceil(max(x2))+1))
-        plt.savefig(f'{experiment_path}/combined.png', bbox_inches="tight")
+        plt.savefig(f'{experiment_path}/combined.eps',
+                    bbox_inches="tight", format='eps')
 
         cf_matrix = confusion_matrix(y_true_val, y_pred_val)
         df_cm = pd.DataFrame(cf_matrix / np.sum(cf_matrix, axis=1)[:, None], index=[
                              f'{names[i]} ({i})' for i in dataset.classes], columns=[f'{names[i]} ({i})' for i in dataset.classes])
         plt.clf()
         plt.figure(figsize=(12, 7))
-        sn.heatmap(df_cm, annot=True)
+        sn.heatmap(df_cm, annot=True, fmt='.3f')
         plt.title('Macierz pomyłek')
-        plt.savefig(f'{experiment_path}/confusion_matrix.png',
-                    bbox_inches="tight")
+        plt.savefig(f'{experiment_path}/confusion_matrix.eps',
+                    bbox_inches="tight", format='eps')
 
         torch.save(model.state_dict(), f'{experiment_path}/model.pth')
 
@@ -363,7 +369,12 @@ def train(experiment_name, model_name, epochs=EPOCHS):
 
 
 if __name__ == '__main__':
-    # train('efficientnet_b5', 'efficientnet_b5')
     train('efficientnet_b0', 'efficientnet_b0')
-    # train('resnet18', 'resnet18')
-    # train('vgg19', 'vgg19')
+    train('efficientnet_b3', 'efficientnet_b3')
+    train('efficientnet_b5', 'efficientnet_b5')
+    train('densenet121', 'densenet121')
+    train('densenet169', 'densenet169')
+    train('densenet201', 'densenet201')
+    train('resnet18', 'resnet18')
+    train('vgg16', 'vgg16')
+    train('vgg19', 'vgg19')

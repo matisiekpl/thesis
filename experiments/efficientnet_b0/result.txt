@@ -1,27 +1,17 @@
                                   precision    recall  f1-score   support
 
-   Nieprawidłowy eozynofil (ABE)       0.00      0.00      0.00         0
-                  Artefakt (ART)       0.00      0.00      0.00       199
-                   Bazofil (BAS)       0.00      0.00      0.00         5
-                     Blast (BLA)       0.09      0.02      0.04       122
-               Erytroblast (EBO)       0.00      0.00      0.00       275
-                 Eozynofil (EOS)       0.00      0.00      0.00        67
-                   Fagocyt (FGC)       0.00      0.00      0.00         0
-          Włochata komórka (HAC)       0.00      0.00      0.00         5
-          Cienie komórkowe (KSC)       0.00      0.00      0.00         1
-      Niedojrzały limfocyt (LYI)       0.00      0.00      0.00         0
-                  Limfocyt (LYT)       0.00      0.00      0.00       252
-              Metamielocyt (MMZ)       0.00      0.00      0.00        31
-                   Monocyt (MON)       0.00      0.00      0.00        37
-                  Mielocyt (MYB)       0.00      0.00      0.00        64
-Krwinka biała pałeczkowata (NGB)       0.02      0.01      0.01       101
-    Segmentowany neutrofil (NGS)       0.00      0.00      0.00       315
-          Brak rozpoznania (NIF)       0.00      0.00      0.00        29
-              Inna komórka (OTH)       0.00      0.00      0.00         2
-            Proerytroblast (PEB)       0.01      0.04      0.01        24
-      Komórka plazmatyczna (PLM)       1.00      0.03      0.05        74
-               Promielocyt (PMO)       0.07      0.01      0.02       107
+                     Blast (BLA)       0.07      0.18      0.10       722
+               Erytroblast (EBO)       0.15      0.00      0.01      1629
+                 Eozynofil (EOS)       0.05      0.51      0.09       369
+                  Limfocyt (LYT)       0.04      0.01      0.01      1593
+                   Monocyt (MON)       0.00      0.00      0.00       242
+                  Mielocyt (MYB)       0.05      0.02      0.02       383
+Krwinka biała pałeczkowata (NGB)       0.04      0.01      0.01       583
+    Segmentowany neutrofil (NGS)       0.31      0.16      0.21      1770
+            Proerytroblast (PEB)       0.04      0.01      0.01       153
+      Komórka plazmatyczna (PLM)       0.04      0.15      0.06       454
+               Promielocyt (PMO)       0.12      0.00      0.01       708
 
-                        accuracy                           0.00      1710
-                       macro avg       0.06      0.01      0.01      1710
-                    weighted avg       0.06      0.00      0.01      1710
+                        accuracy                           0.08      8606
+                       macro avg       0.08      0.09      0.05      8606
+                    weighted avg       0.12      0.08      0.07      8606
