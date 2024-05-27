@@ -72,5 +72,9 @@ for i, p in enumerate(outputs[0]):
 print(
     f'Predicted: {names[dataset.classes[predicted]]}')
 
-plt.imshow(visualization)
-plt.show()
+plt.imsave('cam.png', visualization)
+
+o = 0.3
+combinated = cv2.addWeighted(resized, o, visualization, 1-o, 1)
+
+plt.imsave('combinated.png', cv2.cvtColor(combinated, cv2.COLOR_BGR2RGB))
