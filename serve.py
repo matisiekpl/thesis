@@ -3,7 +3,7 @@ from io import BytesIO
 import torch
 import torch.nn as nn
 from PIL import Image
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from torchvision import models
 from pytorch_grad_cam import GradCAM, HiResCAM, ScoreCAM, GradCAMPlusPlus, AblationCAM, XGradCAM, EigenCAM, FullGrad
@@ -13,6 +13,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import base64
+import os
 
 from train import transform, names
 
@@ -70,6 +71,15 @@ def predict(revision):
         'predictions': result,
         'cam': encoded_cam.decode('utf-8'),
     }
+
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists("dist/" + path):
+        return send_from_directory('dist', path)
+    else:
+        return send_from_directory('dist', 'index.html')
 
 
 if __name__ == '__main__':
