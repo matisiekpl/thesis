@@ -164,8 +164,20 @@ def train(experiment_name, model_name, epochs=EPOCHS):
         model = models.efficientnet_b0(weights='DEFAULT')
         num_ftrs = model.classifier[1].in_features
         model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'efficientnet_b1':
+        model = models.efficientnet_b1(weights='DEFAULT')
+        num_ftrs = model.classifier[1].in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'efficientnet_b2':
+        model = models.efficientnet_b2(weights='DEFAULT')
+        num_ftrs = model.classifier[1].in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
     if model_name == 'efficientnet_b3':
         model = models.efficientnet_b3(weights='DEFAULT')
+        num_ftrs = model.classifier[1].in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'efficientnet_b4':
+        model = models.efficientnet_b4(weights='DEFAULT')
         num_ftrs = model.classifier[1].in_features
         model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
     if model_name == 'efficientnet_b5':
@@ -370,11 +382,14 @@ def train(experiment_name, model_name, epochs=EPOCHS):
 
 if __name__ == '__main__':
     train('efficientnet_b0', 'efficientnet_b0')
-    train('efficientnet_b3', 'efficientnet_b3')
-    train('efficientnet_b5', 'efficientnet_b5')
-    train('densenet121', 'densenet121')
-    train('densenet169', 'densenet169')
-    train('densenet201', 'densenet201')
-    train('resnet18', 'resnet18')
-    train('vgg16', 'vgg16')
-    train('vgg19', 'vgg19')
+    train('efficientnet_b1', 'efficientnet_b1')
+    train('efficientnet_b2', 'efficientnet_b2')
+    # train('efficientnet_b3', 'efficientnet_b3')
+    train('efficientnet_b4', 'efficientnet_b4')
+    # train('efficientnet_b5', 'efficientnet_b5')
+    # train('densenet121', 'densenet121')
+    # train('densenet169', 'densenet169')
+    # train('densenet201', 'densenet201')
+    # train('resnet18', 'resnet18')
+    # train('vgg16', 'vgg16')
+    # train('vgg19', 'vgg19')
