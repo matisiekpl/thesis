@@ -1,0 +1,17 @@
+                                  precision    recall  f1-score   support
+
+                     Blast (BLA)       0.00      0.00      0.00      2421
+               Erytroblast (EBO)       0.19      1.00      0.32      5468
+                 Eozynofil (EOS)       0.00      0.00      0.00      1166
+                  Limfocyt (LYT)       0.00      0.00      0.00      5327
+                   Monocyt (MON)       0.00      0.00      0.00       776
+                  Mielocyt (MYB)       0.00      0.00      0.00      1287
+Krwinka biała pałeczkowata (NGB)       0.00      0.00      0.00      1953
+    Segmentowany neutrofil (NGS)       0.00      0.00      0.00      5896
+            Proerytroblast (PEB)       0.00      0.00      0.00       542
+      Komórka plazmatyczna (PLM)       0.00      0.00      0.00      1497
+               Promielocyt (PMO)       0.00      0.00      0.00      2436
+
+                        accuracy                           0.19     28769
+                       macro avg       0.02      0.09      0.03     28769
+                    weighted avg       0.04      0.19      0.06     28769

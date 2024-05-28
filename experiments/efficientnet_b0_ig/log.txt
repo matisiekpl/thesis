@@ -1,3 +1,0 @@
-Experiment: efficientnet_b0_ig
-Classes: ['BLA', 'EBO', 'EOS', 'LYT', 'MON', 'MYB', 'NGB', 'NGS', 'PEB', 'PLM', 'PMO']
-Number of images: 143847
