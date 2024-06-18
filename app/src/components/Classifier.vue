@@ -16,6 +16,7 @@ const cam = ref(null);
 
 function onDrop(files) {
   distribution.value = null;
+  cam.value = null;
   const reader = new FileReader();
   reader.onload = function (e) {
     image.value = e.target.result;
@@ -38,7 +39,7 @@ async function predict() {
 
   const formData = new FormData();
   formData.append('file', file.value);
-  const response = await axios.post(process.env.VUE_APP_ENDPOINT + '/predict/' + model.value, formData, {
+  const response = await axios.post(window.location.href + 'predict/' + model.value, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
