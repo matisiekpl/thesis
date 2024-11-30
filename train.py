@@ -21,7 +21,7 @@ LR = 0.001
 DATASET_PART = 1
 DRY = False
 INPUT = "/kaggle/input/bone-marrow-cell-classification/bone_marrow_cell_dataset"
-BUCKET_NAME = "mateuszwozniak-thesis"
+BUCKET_NAME = "mateuszwozniak-thesis-experiments"
 
 CLASSES = [
     'NGS',
@@ -50,7 +50,7 @@ if 'kaggle' in INPUT:
     user_secrets = UserSecretsClient()
     aws_access_key_id = user_secrets.get_secret("aws_access_key_id")
     aws_secret_access_key = user_secrets.get_secret("aws_secret_access_key")
-
+    print(f"Using AWS Access Key ID: {aws_access_key_id}")
     aws_session = boto3.Session(
         aws_access_key_id=aws_access_key_id,
         aws_secret_access_key=aws_secret_access_key,
@@ -140,7 +140,7 @@ transform = transforms.Compose([
 
 
 def upload_to_s3(experiment_name):
-    s3 = aws_session.resource('s3')
+    s3 = aws_session.client('s3')
     for root, dirs, files in os.walk(f'./experiments/{experiment_name}'):
         for file in files:
             s3.upload_file(os.path.join(root, file), BUCKET_NAME,
@@ -406,14 +406,18 @@ def train(experiment_name, model_name, epochs=EPOCHS):
 
 if __name__ == '__main__':
     train('efficientnet_b0', 'efficientnet_b0')
-    # train('efficientnet_b1', 'efficientnet_b1')
-    # train('efficientnet_b2', 'efficientnet_b2')
-    # train('efficientnet_b3', 'efficientnet_b3')
-    # train('efficientnet_b4', 'efficientnet_b4')
-    # train('efficientnet_b5', 'efficientnet_b5')
-    # train('densenet121', 'densenet121')
-    # train('densenet169', 'densenet169')
-    # train('densenet201', 'densenet201')
-    # train('resnet18', 'resnet18')
-    # train('vgg16', 'vgg16')
-    # train('vgg19', 'vgg19')
+    train('efficientnet_b1', 'efficientnet_b1')
+    train('efficientnet_b2', 'efficientnet_b2')
+    train('efficientnet_b3', 'efficientnet_b3')
+    train('efficientnet_b4', 'efficientnet_b4')
+    train('efficientnet_b5', 'efficientnet_b5')
+    train('densenet121', 'densenet121')
+    train('densenet169', 'densenet169')
+    train('densenet201', 'densenet201')
+    train('resnet18', 'resnet18')
+    train('resnet50', 'resnet50')
+    train('resnet101', 'resnet101')
+    train('vgg16', 'vgg16')
+    train('vgg19', 'vgg19')
+    train('inception_v3', 'inception_v3')
+    train('alexnet', 'alexnet')
