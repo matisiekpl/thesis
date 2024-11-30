@@ -13,6 +13,7 @@ from tqdm import tqdm
 from PIL import Image
 from sys import platform
 import math
+import boto3
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 EPOCHS = 3
@@ -20,6 +21,7 @@ LR = 0.001
 DATASET_PART = 1
 DRY = False
 INPUT = "/kaggle/input/bone-marrow-cell-classification/bone_marrow_cell_dataset"
+BUCKET_NAME = "mateuszwozniak-thesis"
 
 CLASSES = [
     'NGS',
@@ -42,6 +44,19 @@ if platform == "darwin":
 
 if os.path.isdir('dataset'):
     INPUT = 'dataset'
+
+if 'kaggle' in INPUT:
+    from kaggle_secrets import UserSecretsClient
+    user_secrets = UserSecretsClient()
+    aws_access_key_id = user_secrets.get_secret("aws_access_key_id")
+    aws_secret_access_key = user_secrets.get_secret("aws_secret_access_key")
+
+    aws_session = boto3.Session(
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+    )
+else:
+    aws_session = boto3.Session()
 
 names = {
     'ABE': 'Nieprawidłowy eozynofil',
@@ -117,12 +132,20 @@ class CustomDataset(Dataset):
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
-    # transforms.ToPILImage(),
     transforms.RandomEqualize(1),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[
         0.229, 0.224, 0.225]),
 ])
+
+
+def upload_to_s3(experiment_name):
+    s3 = aws_session.resource('s3')
+    for root, dirs, files in os.walk(f'./experiments/{experiment_name}'):
+        for file in files:
+            s3.upload_file(os.path.join(root, file), BUCKET_NAME,
+                           f'experiments/{experiment_name}/{file}')
+    print(f'Uploaded experiment {experiment_name} to S3')
 
 
 def train(experiment_name, model_name, epochs=EPOCHS):
@@ -377,15 +400,16 @@ def train(experiment_name, model_name, epochs=EPOCHS):
         }, f'{experiment_path}/checkpoint.pt')
 
     log_file.close()
+    upload_to_s3(experiment_name)
     print("Training complete.")
 
 
 if __name__ == '__main__':
     train('efficientnet_b0', 'efficientnet_b0')
-    train('efficientnet_b1', 'efficientnet_b1')
-    train('efficientnet_b2', 'efficientnet_b2')
+    # train('efficientnet_b1', 'efficientnet_b1')
+    # train('efficientnet_b2', 'efficientnet_b2')
     # train('efficientnet_b3', 'efficientnet_b3')
-    train('efficientnet_b4', 'efficientnet_b4')
+    # train('efficientnet_b4', 'efficientnet_b4')
     # train('efficientnet_b5', 'efficientnet_b5')
     # train('densenet121', 'densenet121')
     # train('densenet169', 'densenet169')

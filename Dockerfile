@@ -1,11 +1,11 @@
-FROM node:21 as builder
+FROM node:21 AS builder
 WORKDIR /app
 COPY app/ .
 RUN ls 
 RUN yarn install
 RUN yarn build
 
-FROM python
+FROM pytorch/pytorch
 WORKDIR /app
 COPY . .
 RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y
