@@ -103,6 +103,7 @@ def list_models():
     model_names = os.listdir('experiments')
     model_names = [
         model_name for model_name in model_names if not model_name.startswith('.')]
+    model_names.sort()
     results = []
     for model_name in model_names:
         with open(f'experiments/{model_name}/result.txt', 'r') as f:
