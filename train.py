@@ -45,7 +45,7 @@ if platform == "darwin":
 if os.path.isdir('dataset'):
     INPUT = 'dataset'
 
-if 'kaggle' in INPUT:
+if 'kaggle' in INPUT and 'IS_DOCKER' not in os.environ:
     from kaggle_secrets import UserSecretsClient
     user_secrets = UserSecretsClient()
     aws_access_key_id = user_secrets.get_secret("aws_access_key_id")
@@ -105,6 +105,8 @@ class CustomDataset(Dataset):
             class_path = os.path.join(self.root_dir, class_name)
             for root, _, filenames in os.walk(class_path):
                 for filename in filenames:
+                    if '0000' in filename or '0001' in filename:
+                        continue
                     images.append((os.path.join(root, filename),
                                   self.class_to_idx[class_name]))
         return images
@@ -406,18 +408,18 @@ def train(experiment_name, model_name, epochs=EPOCHS):
 
 if __name__ == '__main__':
     train('efficientnet_b0', 'efficientnet_b0')
-    train('efficientnet_b1', 'efficientnet_b1')
-    train('efficientnet_b2', 'efficientnet_b2')
-    train('efficientnet_b3', 'efficientnet_b3')
-    train('efficientnet_b4', 'efficientnet_b4')
-    train('efficientnet_b5', 'efficientnet_b5')
-    train('densenet121', 'densenet121')
-    train('densenet169', 'densenet169')
-    train('densenet201', 'densenet201')
-    train('resnet18', 'resnet18')
-    train('resnet50', 'resnet50')
-    train('resnet101', 'resnet101')
-    train('vgg16', 'vgg16')
-    train('vgg19', 'vgg19')
-    train('inception_v3', 'inception_v3')
-    train('alexnet', 'alexnet')
+    # train('efficientnet_b1', 'efficientnet_b1')
+    # train('efficientnet_b2', 'efficientnet_b2')
+    # train('efficientnet_b3', 'efficientnet_b3')
+    # train('efficientnet_b4', 'efficientnet_b4')
+    # train('efficientnet_b5', 'efficientnet_b5')
+    # train('densenet121', 'densenet121')
+    # train('densenet169', 'densenet169')
+    # train('densenet201', 'densenet201')
+    # train('resnet18', 'resnet18')
+    # train('resnet50', 'resnet50')
+    # train('resnet101', 'resnet101')
+    # train('vgg16', 'vgg16')
+    # train('vgg19', 'vgg19')
+    # train('inception_v3', 'inception_v3')
+    # train('alexnet', 'alexnet')

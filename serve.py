@@ -10,7 +10,6 @@ from pytorch_grad_cam import GradCAM, HiResCAM, ScoreCAM, GradCAMPlusPlus, Ablat
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 from pytorch_grad_cam.utils.image import show_cam_on_image
 import numpy as np
-import cv2
 import matplotlib.pyplot as plt
 import base64
 import os
@@ -22,11 +21,6 @@ CORS(app)
 
 classes = ['BLA', 'EBO', 'EOS', 'LYT', 'MON',
            'MYB', 'NGB', 'NGS', 'PEB', 'PLM', 'PMO']
-# model = models.resnet18(weights='DEFAULT')
-# num_ftrs = model.fc.in_features
-# model.fc = nn.Linear(num_ftrs, len(classes))
-# model.load_state_dict(torch.load(
-# 'experiments/resnet18/model.pth', map_location=torch.device('cpu')))
 
 
 def get_model(model_name):

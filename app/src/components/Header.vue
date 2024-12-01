@@ -11,6 +11,9 @@
       <a href="https://github.com/matisiekpl/thesis" target="_blank" class="hover:underline">
         GitHub
       </a>
+      <a href="/samples.zip" class="hover:underline" download="samples.zip">
+        ⬇️ Próbki
+      </a>
       <div>
         Projekt inżynierski: Mateusz Woźniak
       </div>

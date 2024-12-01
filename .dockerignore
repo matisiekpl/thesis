@@ -160,6 +160,6 @@ cython_debug/
 .idea/
 
 dataset/
-sample/
+samples/
 venv/
 app/node_modules/
