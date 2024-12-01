@@ -22,18 +22,109 @@ CORS(app)
 
 classes = ['BLA', 'EBO', 'EOS', 'LYT', 'MON',
            'MYB', 'NGB', 'NGS', 'PEB', 'PLM', 'PMO']
-model = models.resnet18(weights='DEFAULT')
-num_ftrs = model.fc.in_features
-model.fc = nn.Linear(num_ftrs, len(classes))
-model.load_state_dict(torch.load(
-    'experiments/resnet18/model.pth', map_location=torch.device('cpu')))
+# model = models.resnet18(weights='DEFAULT')
+# num_ftrs = model.fc.in_features
+# model.fc = nn.Linear(num_ftrs, len(classes))
+# model.load_state_dict(torch.load(
+# 'experiments/resnet18/model.pth', map_location=torch.device('cpu')))
 
 
-@app.route('/predict/<revision>', methods=['POST'])
-def predict(revision):
+def get_model(model_name):
+    class Dataset:
+        def __init__(self, classes):
+            self.classes = classes
+    dataset = Dataset(classes)
+    if model_name == 'efficientnet_b0':
+        model = models.efficientnet_b0(weights='DEFAULT')
+        num_ftrs = model.classifier[1].in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'efficientnet_b1':
+        model = models.efficientnet_b1(weights='DEFAULT')
+        num_ftrs = model.classifier[1].in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'efficientnet_b2':
+        model = models.efficientnet_b2(weights='DEFAULT')
+        num_ftrs = model.classifier[1].in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'efficientnet_b3':
+        model = models.efficientnet_b3(weights='DEFAULT')
+        num_ftrs = model.classifier[1].in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'efficientnet_b4':
+        model = models.efficientnet_b4(weights='DEFAULT')
+        num_ftrs = model.classifier[1].in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'efficientnet_b5':
+        model = models.efficientnet_b5(weights='DEFAULT')
+        num_ftrs = model.classifier[1].in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'resnet18':
+        model = models.resnet18(pretrained=True)
+        num_ftrs = model.fc.in_features
+        model.fc = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'resnet50':
+        model = models.resnet50(pretrained=True)
+        num_ftrs = model.fc.in_features
+        model.fc = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'resnet101':
+        model = models.resnet101(pretrained=True)
+        num_ftrs = model.fc.in_features
+        model.fc = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'inception_v3':
+        model = models.inception_v3(pretrained=True)
+        num_ftrs = model.fc.in_features
+        model.fc = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'densenet121':
+        model = models.densenet121(pretrained=True)
+        num_ftrs = model.classifier.in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'densenet169':
+        model = models.densenet169(pretrained=True)
+        num_ftrs = model.classifier.in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'densenet201':
+        model = models.densenet201(pretrained=True)
+        num_ftrs = model.classifier.in_features
+        model.classifier = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'vgg16':
+        model = models.vgg16(pretrained=True)
+        num_ftrs = model.classifier[6].in_features
+        model.classifier[6] = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'vgg19':
+        model = models.vgg19(pretrained=True)
+        num_ftrs = model.classifier[6].in_features
+        model.classifier[6] = nn.Linear(num_ftrs, len(dataset.classes))
+    if model_name == 'alexnet':
+        model = models.alexnet(pretrained=True)
+        num_ftrs = model.classifier[6].in_features
+        model.classifier[6] = nn.Linear(num_ftrs, len(dataset.classes))
+
+    model.load_state_dict(torch.load(
+        f'experiments/{model_name}/model.pth', map_location=torch.device('cpu')))
+    return model
+
+
+@app.route('/models')
+def list_models():
+    model_names = os.listdir('experiments')
+    model_names = [
+        model_name for model_name in model_names if not model_name.startswith('.')]
+    results = []
+    for model_name in model_names:
+        with open(f'experiments/{model_name}/result.txt', 'r') as f:
+            results.append({
+                'name': model_name,
+                'result': f.read()
+            })
+    return results
+
+
+@app.route('/predict/<model_name>', methods=['POST'])
+def predict(model_name):
     if 'file' not in request.files:
         return 'No file part'
 
+    # Validate
     file = request.files['file']
     if file.filename == '':
         return 'No selected file'
@@ -45,32 +136,40 @@ def predict(revision):
     image = transform(I)
     resized = I.resize((224, 224))
 
-    # file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
-    # resized = cv2.resize(cv2.imdecode(
-    #     file_bytes, cv2.IMREAD_COLOR), (224, 224))
-
-    cam = FullGrad(model=model, target_layers=[model.layer4[-1]])
+    # Predict
+    model = get_model(model_name)
     model.eval()
-    # with torch.no_grad():
     outputs = model(image.unsqueeze(0))
     result = {}
     for i, p in enumerate(outputs[0]):
         percent = torch.nn.functional.softmax(outputs, dim=1)[0][i] * 100
         print(f'{names[classes[i]]}: {percent.item():.4f}%')
         result[names[classes[i]]] = percent.item()
-    grayscale_cam = cam(input_tensor=image.unsqueeze(
-        0), targets=[ClassifierOutputTarget(10)], aug_smooth=True, eigen_smooth=False)
-    grayscale_cam = grayscale_cam[0, :]
-    visualization = show_cam_on_image(
-        np.array(resized, np.float32)/255, grayscale_cam, use_rgb=True)
-    plt.imsave('cam.png', visualization)
 
-    encoded_cam = base64.b64encode(open('cam.png', 'rb').read())
+    # Generate CAM
 
-    return {
+    target_layers = []
+    if model_name in ['resnet18', 'resnet50', 'resnet101']:
+        target_layers = [model.layer4[-1]]
+
+    if len(target_layers) > 0:
+        cam = FullGrad(model=model, target_layers=target_layers)
+        grayscale_cam = cam(input_tensor=image.unsqueeze(
+            0), targets=[ClassifierOutputTarget(10)], aug_smooth=True, eigen_smooth=False)
+        grayscale_cam = grayscale_cam[0, :]
+        visualization = show_cam_on_image(
+            np.array(resized, np.float32)/255, grayscale_cam, use_rgb=True)
+        plt.imsave('cam.png', visualization)
+        encoded_cam = base64.b64encode(open('cam.png', 'rb').read())
+    else:
+        encoded_cam = None
+
+    output = {
         'predictions': result,
-        'cam': encoded_cam.decode('utf-8'),
     }
+    if encoded_cam is not None:
+        output['cam'] = encoded_cam.decode('utf-8'),
+    return output
 
 
 @app.route('/', defaults={'path': ''})
