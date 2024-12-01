@@ -106,6 +106,7 @@ class CustomDataset(Dataset):
             for root, _, filenames in os.walk(class_path):
                 for filename in filenames:
                     if '0000' in filename or '0001' in filename:
+                        print(f'Skipping {filename}')
                         continue
                     images.append((os.path.join(root, filename),
                                   self.class_to_idx[class_name]))
@@ -408,11 +409,11 @@ def train(experiment_name, model_name, epochs=EPOCHS):
 
 if __name__ == '__main__':
     train('efficientnet_b0', 'efficientnet_b0')
-    # train('efficientnet_b1', 'efficientnet_b1')
-    # train('efficientnet_b2', 'efficientnet_b2')
-    # train('efficientnet_b3', 'efficientnet_b3')
-    # train('efficientnet_b4', 'efficientnet_b4')
-    # train('efficientnet_b5', 'efficientnet_b5')
+    train('efficientnet_b1', 'efficientnet_b1')
+    train('efficientnet_b2', 'efficientnet_b2')
+    train('efficientnet_b3', 'efficientnet_b3')
+    train('efficientnet_b4', 'efficientnet_b4')
+    train('efficientnet_b5', 'efficientnet_b5')
     # train('densenet121', 'densenet121')
     # train('densenet169', 'densenet169')
     # train('densenet201', 'densenet201')
